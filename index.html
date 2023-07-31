@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mbahnizen's Alarm Clock</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="alarm-clock">
+        <h1>Alarm Clock</h1>
+		<input type="time" id="time" placeholder="Set time" format="HH:mm">
+        <select id="ringtone">
+            <option value="alarm.mp3">Default sound</option>
+            <option value="alarm_classic.mp3">Sound 1</option>
+            <option value="best_alarm.mp3">Sound 2</option>
+            <option value="technic_color.mp3">Sound 3</option>
+            <option value="chicken_sacrificealarm.mp3">Chicken Alarm</option>
+            <option value="extreme_alarm_clock.mp3">Extreme Alarm</option>
+            <option value="k_good_morning.mp3">Morning Alarm</option>
+            <option value="piano_alarm.mp3">Piano Alarm</option>
+        </select>
+        <button id="set-alarm" onclick="setAlarm()">Set Alarm</button>
+        <button id="stop-alarm" onclick="stopAlarm()">>Stop Alarm</button>
+        <div id="alarm-sound"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
