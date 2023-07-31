@@ -1,30 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Mbahnizen's Alarm Clock</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Alarm Clock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .alarm-container {
+      margin-top: 50px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: inline-block;
+      width: 100px;
+      text-align: right;
+      margin-right: 10px;
+    }
+
+    .input-group input {
+      padding: 5px;
+      width: 200px;
+    }
+
+    .input-group select {
+      padding: 5px;
+      width: 200px;
+    }
+
+    .button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #555;
+    }
+  </style>
 </head>
 <body>
-    <div class="alarm-clock">
-        <h1>Alarm Clock</h1>
-		<input type="time" id="time" placeholder="Set time" format="HH:mm">
-        <select id="ringtone">
-            <option value="alarm.mp3">Default sound</option>
-            <option value="alarm_classic.mp3">Sound 1</option>
-            <option value="best_alarm.mp3">Sound 2</option>
-            <option value="technic_color.mp3">Sound 3</option>
-            <option value="chicken_sacrificealarm.mp3">Chicken Alarm</option>
-            <option value="extreme_alarm_clock.mp3">Extreme Alarm</option>
-            <option value="k_good_morning.mp3">Morning Alarm</option>
-            <option value="piano_alarm.mp3">Piano Alarm</option>
-        </select>
-        <button id="set-alarm" onclick="setAlarm()">Set Alarm</button>
-        <button id="stop-alarm" onclick="stopAlarm()">>Stop Alarm</button>
-        <div id="alarm-sound"></div>
+  <h1>Alarm Clock</h1>
+  <div class="alarm-container">
+    <div class="input-group">
+      <label>Hour:</label>
+      <input type="number" id="hourInput" min="0" max="23" required>
     </div>
-    <script src="script.js"></script>
+    <div class="input-group">
+      <label>Minute:</label>
+      <input type="number" id="minuteInput" min="0" max="59" required>
+    </div>
+    <div class="input-group">
+      <label>Second:</label>
+      <input type="number" id="secondInput" min="0" max="59" required>
+    </div>
+    <div class="input-group">
+      <label>Ringtone:</label>
+      <select id="ringtoneInput">
+        <option value="ringtones/alarm.mp3">Default sound</option>
+        <option value="ringtones/alarm_classic.mp3">Sound 1</option>
+        <option value="ringtones/best_alarm.mp3">Sound 2</option>
+        <option value="ringtones/technic_color.mp3">Sound 3</option>
+        <option value="ringtones/chicken_sacrificealarm.mp3">Guitar Alarm</option>
+        <option value="ringtones/piano_alarm.mp3">Piano Alarm</option>
+        <option value="ringtones/k_good_morning.mp3">Morning Alarm</option>
+        <option value="ringtones/extreme_alarm_clock.mp3">Extreme Alarm</option>
+      </select>
+      <button class="button" onclick="playRingtone()" id="playButton">Play Ringtone</button>
+      <button class="button" onclick="stopRingtone()" id="stopButton" style="display: none;">Stop Ringtone</button>
+    </div>
+    <button class="button" onclick="setAlarm()">Set Alarm</button>
+    <button class="button" onclick="stopAlarm()" id="stopAlarmButton" style="display: none;">Stop Alarm</button>
+  </div>
+
+  <script>
+    var alarmAudio;
+    var alarmTimeout;
+    var isPlayingRingtone = false;
+
+    function setAlarm() {
+      var hour = document.getElementById('hourInput').value;
+      var minute = document.getElementById('minuteInput').value;
+      var second = document.getElementById('secondInput').value;
+      var ringtone = document.getElementById('ringtoneInput').value;
+
+      var now = new Date();
+      var alarmTime = new Date();
+      alarmTime.setHours(hour);
+      alarmTime.setMinutes(minute);
+      alarmTime.setSeconds(second);
+
+      var timeDiff = alarmTime.getTime() - now.getTime();
+      if (timeDiff < 0) {
+        alert('Invalid time. Please set a future time.');
+        return;
+      }
+
+      alarmAudio = new Audio(ringtone);
+      alarmTimeout = setTimeout(function() {
+        playAlarm();
+      }, timeDiff);
+    }
+
+    function stopAlarm() {
+      clearTimeout(alarmTimeout);
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+
+      document.getElementById('stopAlarmButton').style.display = 'none';
+      document.getElementById('hourInput').disabled = false;
+      document.getElementById('minuteInput').disabled = false;
+      document.getElementById('secondInput').disabled = false;
+      document.getElementById('ringtoneInput').disabled = false;
+    }
+
+    function playAlarm() {
+      alarmAudio.loop = true;
+      alarmAudio.play();
+      document.getElementById('stopAlarmButton').style.display = 'inline';
+      document.getElementById('hourInput').disabled = true;
+      document.getElementById('minuteInput').disabled = true;
+      document.getElementById('secondInput').disabled = true;
+      document.getElementById('ringtoneInput').disabled = true;
+    }
+
+    function playRingtone() {
+      if (isPlayingRingtone) {
+        return;
+      }
+
+      var ringtone = document.getElementById('ringtoneInput').value;
+      alarmAudio = new Audio(ringtone);
+      alarmAudio.play();
+
+      document.getElementById('playButton').style.display = 'none';
+      document.getElementById('stopButton').style.display = 'inline';
+      isPlayingRingtone = true;
+    }
+
+    function stopRingtone() {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      isPlayingRingtone = false;
+
+      document.getElementById('playButton').style.display = 'inline';
+      document.getElementById('stopButton').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
-
 
